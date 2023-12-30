@@ -45,14 +45,7 @@ For deploying the Lambda stack, run the following command, which will use the co
 cdk deploy ATPPredictionsLambdaStack
 ```
 
-To trigger the parser lambda, run the following command:
-
-```bash
-# TODO: add instructions
-aws lambda invoke --function-name HelloWorldLambda --payload '{}' --region us-east-1 --cli-binary-format raw-in-base64-out response.json
-```
-
-Trigger the API using: https://73ge32697l.execute-api.us-east-1.amazonaws.com/prod
+Trigger the lambda via an API call to API Gateway or using `aws lambda invoke`.
 
 ## References
 

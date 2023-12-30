@@ -8,8 +8,8 @@ export class LambdaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const handler = new lambda.Function(this, 'HelloWorldLambda', {
-      functionName: "HelloWorldLambda",
+    const handler = new lambda.Function(this, 'ATPPredictionsLambda', {
+      functionName: "ATPPredictionsLambda",
       runtime: lambda.Runtime.NODEJS_16_X,
       code: lambda.Code.fromAsset("../src"),
       handler: "index.handler",
@@ -17,9 +17,9 @@ export class LambdaStack extends cdk.Stack {
       }
     });
 
-    const api = new apigateway.RestApi(this, "HelloWorldService", {
-      restApiName: "Website Service",
-      description: "This service serves traffic."
+    const api = new apigateway.RestApi(this, "ATPPredictionsService", {
+      restApiName: "ATPPredictionsService",
+      description: "Provides APIs for saving and fetching API predictions"
     })
 
     const integration = new apigateway.LambdaIntegration(handler, {
