@@ -33,6 +33,13 @@ app.get('/get_customized_tournaments', checkJwt, async (req, res) => {
 })
 
 /**
+ * returns the entrants for a tournament
+ */
+app.get('/get_entrants', async (req, res) => {
+    endpoints.get_entrants(req, res);
+});
+
+/**
  * returns the leaderboard (for non-authenticated user)
  */
 //app.get('/get_generic_leaderboard', async (req, res) => {

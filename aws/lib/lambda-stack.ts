@@ -27,7 +27,19 @@ export class LambdaStack extends cdk.Stack {
       }
     });
 
-    for (const fn of [getGenericTournamentsLambdaFn, getCustomizedTournamentsLambdaFn]) {
+    const getEntrantsLambdaFn = new lambda.Function(this, 'GetEntrantsLambda', {
+      functionName: "GetEntrants",
+      runtime: lambda.Runtime.NODEJS_16_X,
+      code: lambda.Code.fromAsset("../src"),
+      handler: "get_entrants.handler",
+      environment: {
+      }
+    });
+
+    for (const fn of [
+      getGenericTournamentsLambdaFn,
+      getCustomizedTournamentsLambdaFn,
+      getEntrantsLambdaFn]) {
       fn.addToRolePolicy(new PolicyStatement({
         actions: ['dynamodb:*'],
         effect: Effect.ALLOW,
@@ -47,7 +59,12 @@ export class LambdaStack extends cdk.Stack {
     
     const getCustomizedTournamentsResource = api.root.addResource('get_customized_tournaments');
     getCustomizedTournamentsResource.addMethod('GET', new apigateway.LambdaIntegration(getCustomizedTournamentsLambdaFn, {
-      requestTemlates: { "text/html": '{ "statusCode": "200"}' }
+      requestTemplates: { "text/html": '{ "statusCode": "200"}' }
+    }));
+
+    const getEntrantsResource = api.root.addResource('get_entrants');
+    getEntrantsResource.addMethod('GET', new apigateway.LambdaIntegration(getEntrantsLambdaFn, {
+      requestTemplates: { "text/html": '{ "statusCode": "200"}' }
     }));
   }
 }

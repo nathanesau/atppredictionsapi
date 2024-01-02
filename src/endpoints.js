@@ -45,6 +45,40 @@ async function get_tournaments() {
     return tournaments;
 }
 
+async function get_entrants(tournament_id) {
+    var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+
+    let entrants = [];
+
+    await ddb.query({
+        TableName: "Entrant",
+        IndexName: "tournamentIdIndex",
+        KeyConditionExpression: "tournament_id = :tournament_id",
+        ExpressionAttributeValues: {
+            ":tournament_id": {
+                S: tournament_id
+            }
+        }
+  }, function(err, data) {
+    if (err) {
+        console.log("Unable to fetch entrants", err);
+    } else {
+        console.log("Successfully fetched entrants");
+        for (const entrant of data.Items) {
+            entrants.push({
+                last_updated: entrant.last_updated.S,
+                order: entrant.order.N,
+                player_id: entrant.player_id.S,
+                player_name: entrant.player_name.S,
+                id: entrant.id.S
+            });
+        }
+    }
+  }).promise();
+
+  return entrants;
+}
+
 module.exports.get_generic_tournaments_handler = async function(req, res) {
     const tournaments = await get_tournaments();
     res.send({ tournaments: tournaments });
@@ -56,6 +90,12 @@ module.exports.get_customized_tournaments_handler = async function(req, res) {
     // TODO: get tournaments enriched with prediction information
     const tournaments = await get_tournaments();
     res.send({ userId: userId, tournaments: tournaments });
+}
+
+module.exports.get_entrants = async function(req, res) {
+    const tournament_id = req.query.tournament_id;
+    const entrants = await get_entrants(tournament_id);
+    res.send({ entrants: entrants });
 }
 
 //module.exports.get_generic_leaderboard_handler = async function(req, res) {
