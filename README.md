@@ -1,5 +1,9 @@
 # atppredictionsapi
 
+## Local Testing
+
+Run `npm start`. Use `nodemon` for debugging.
+
 ## AWS Instructions
 
 Installing CDK (you'll also want to run `npm install`):
