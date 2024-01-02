@@ -44,7 +44,7 @@ app.get('/get_entrants', async (req, res) => {
 /**
  * save a prediction for a tournament
  */
-app.post('/save_prediction', async (req, res) => {
+app.post('/save_prediction', checkJwt, async (req, res) => {
     endpoints.save_prediction_handler(req, res);
 });
 

@@ -127,20 +127,8 @@ module.exports.get_entrants_handler = async function(req, res) {
 }
 
 module.exports.save_prediction_handler = async function(req, res) {
-    //const userId = await getUserId(req);
-    const userId = "nathanesau1@gmail.com";
+    const userId = await getUserId(req);
     console.log(req.body);
     const prediction = await save_prediction(req.body, userId);
     res.send({ prediction: prediction });
 }
-
-//module.exports.get_generic_leaderboard_handler = async function(req, res) {
-//    // TODO: get leaderboard from predictions table
-//    res.send({ msg: "hello world" });
-//}
-
-//module.exports.get_customized_leaderboard_handler = async function(req, res) {
-//    // TODO: get leaderboard from predictions table
-//    res.send({ msg: "hello world" });
-//}
-
