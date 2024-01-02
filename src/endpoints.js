@@ -1,5 +1,6 @@
 const fetch = require("node-fetch");
 const constants = require('./constants');
+const uuid = require("uuid");
 var AWS = require('aws-sdk');
 
 // global aws configuration
@@ -79,6 +80,33 @@ async function get_entrants(tournament_id) {
   return entrants;
 }
 
+async function save_prediction(prediction, user_id) {
+    var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+
+    return await ddb.putItem({
+        TableName: "Predictions",
+        Item: {
+            id: {"S": uuid.v4()},
+            winner_id: {"S": prediction['winner_id']},
+            winner_name: {"S": prediction['winner_name']},
+            runner_up_id: {"S": prediction['runner_up_id']},
+            runner_up_name: {"S": prediction['runner_up_name']},
+            semi_finalist_1_id: {"S": prediction['semi_finalist_1_id']},
+            semi_finalist_1_name: {"S": prediction['semi_finalist_1_name']},
+            semi_finalist_2_id: {"S": prediction['semi_finalist_2_id']},
+            semi_finalist_2_name: {"S": prediction['semi_finalist_2_name']},
+            user_id: {"S": user_id},
+            last_updated: {"S": new Date().toISOString()}
+        }
+    }, function(err, data) {
+        if (err) {
+            console.log("Unable to save prediction", err);
+        } else {
+            console.log("Successfully saved prediction");
+        }
+    }).promise();
+}
+
 module.exports.get_generic_tournaments_handler = async function(req, res) {
     const tournaments = await get_tournaments();
     res.send({ tournaments: tournaments });
@@ -92,10 +120,18 @@ module.exports.get_customized_tournaments_handler = async function(req, res) {
     res.send({ userId: userId, tournaments: tournaments });
 }
 
-module.exports.get_entrants = async function(req, res) {
+module.exports.get_entrants_handler = async function(req, res) {
     const tournament_id = req.query.tournament_id;
     const entrants = await get_entrants(tournament_id);
     res.send({ entrants: entrants });
+}
+
+module.exports.save_prediction_handler = async function(req, res) {
+    //const userId = await getUserId(req);
+    const userId = "nathanesau1@gmail.com";
+    console.log(req.body);
+    const prediction = await save_prediction(req.body, userId);
+    res.send({ prediction: prediction });
 }
 
 //module.exports.get_generic_leaderboard_handler = async function(req, res) {

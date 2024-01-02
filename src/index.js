@@ -7,8 +7,10 @@ const cors = require("cors");
 const { auth } = require("express-oauth2-jwt-bearer");
 const endpoints = require('./endpoints');
 const constants = require('./constants');
+const bodyParser = require("body-parser");
 
 const app = express();
+app.use(bodyParser.json());
 
 app.use(cors({ origin: '*' }));
 
@@ -36,7 +38,14 @@ app.get('/get_customized_tournaments', checkJwt, async (req, res) => {
  * returns the entrants for a tournament
  */
 app.get('/get_entrants', async (req, res) => {
-    endpoints.get_entrants(req, res);
+    endpoints.get_entrants_handler(req, res);
+});
+
+/**
+ * save a prediction for a tournament
+ */
+app.post('/save_prediction', async (req, res) => {
+    endpoints.save_prediction_handler(req, res);
 });
 
 /**

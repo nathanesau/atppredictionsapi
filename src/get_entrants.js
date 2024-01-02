@@ -8,7 +8,7 @@ const app = express();
 app.use(cors({ origin: '*' }));
 
 app.get('/get_entrants', async (req, res) => {
-    endpoints.get_entrants(req, res);
+    endpoints.get_entrants_handler(req, res);
 })
 
 const server = awsServerlessExpress.createServer(app);

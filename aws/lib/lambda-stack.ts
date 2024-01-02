@@ -36,10 +36,20 @@ export class LambdaStack extends cdk.Stack {
       }
     });
 
+    const savePredictionLambdaFn = new lambda.Function(this, 'SavePrediction', {
+      functionName: "SavePrediction",
+      runtime: lambda.Runtime.NODEJS_16_X,
+      code: lambda.Code.fromAsset("../src"),
+      handler: "save_prediction.handler",
+      environment: {
+      }
+    });
+
     for (const fn of [
       getGenericTournamentsLambdaFn,
       getCustomizedTournamentsLambdaFn,
-      getEntrantsLambdaFn]) {
+      getEntrantsLambdaFn,
+      savePredictionLambdaFn]) {
       fn.addToRolePolicy(new PolicyStatement({
         actions: ['dynamodb:*'],
         effect: Effect.ALLOW,
@@ -64,6 +74,11 @@ export class LambdaStack extends cdk.Stack {
 
     const getEntrantsResource = api.root.addResource('get_entrants');
     getEntrantsResource.addMethod('GET', new apigateway.LambdaIntegration(getEntrantsLambdaFn, {
+      requestTemplates: { "text/html": '{ "statusCode": "200"}' }
+    }));
+
+    const savePredictionResource = api.root.addResource("save_prediction");
+    savePredictionResource.addMethod('POST', new apigateway.LambdaIntegration(savePredictionLambdaFn, {
       requestTemplates: { "text/html": '{ "statusCode": "200"}' }
     }));
   }
