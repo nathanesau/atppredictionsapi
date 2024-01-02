@@ -35,7 +35,8 @@ async function get_tournaments() {
                     end_date: tournament.end_date.S,
                     start_date: tournament.start_date.S,
                     category: tournament.category.S,
-                    name: tournament.name.S
+                    name: tournament.name.S,
+                    id: tournament.id.S
                 });
             }
         }
